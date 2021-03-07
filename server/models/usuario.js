@@ -8,7 +8,7 @@ let Schema = mongoose.Schema;
 
 // se define esto y se usa en enum en el campo role
 let rolesValidos = {
-    values: ['USER_ROLE', 'SUPER_ROLE'],
+    values: ['USER_ROLE', 'ADMIN_ROLE'],
     message: '{VALUE} no es un role valido'
 };
 

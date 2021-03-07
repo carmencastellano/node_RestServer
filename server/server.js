@@ -15,7 +15,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
-app.use(require('./routes/usuario')); // con esto habilitamos las rutas /usuario en get..put..etc
+
+// configutacion global de rutas /usuario /login en get..put..etc
+app.use(require('./routes/index'));
+
 
 // conexion a la base de datos
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },

@@ -2,7 +2,7 @@ const express = require('express');
 
 const bcrypt = require('bcrypt');
 
-// const _ = require('underscore');
+const _ = require('underscore');
 
 // toma el modelo delschema de models
 
@@ -10,8 +10,12 @@ const Usuario = require('../models/usuario');
 
 const app = express();
 
-app.get('/usuario', (req, res) => {
+const { verificaToken, verificaAdmin_Role } = require('../middleware/autenticacion');
 
+
+app.get('/usuario', verificaToken, (req, res) => { // verificaToken es un middleware, esto si dispara cada vez que pasa por acas
+
+    // app.get('/usuario', (req, res) => {
     // req.query -- parametros opcionales. cant pag
 
     let desde = req.query.desde || 0; // desde numero 5 o cero
@@ -37,7 +41,8 @@ app.get('/usuario', (req, res) => {
             };
 
             // Usuario.count({ estado: false }, (err, conteo) => {
-            Usuario.count(condicion, (err, conteo) => {
+
+            Usuario.countDocuments(condicion, (err, conteo) => {
                 if (err) {
 
                     // al poner return corta el if
@@ -58,7 +63,8 @@ app.get('/usuario', (req, res) => {
         })
 });
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
+    // app.post('/usuario', verificaToken, (req, res) => {
 
     let body = req.body;
 
@@ -112,19 +118,22 @@ app.post('/usuario', (req, res) => {
 // });
 
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     let id = req.params.id;
 
-    let body = req.body;
+    // let body = req.body;
     // con el underscore solo selecciono los campos a actualizar
 
-    // let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado', 'password']);
     // Usuario.findById(id, (err, usuarioDB) => {
     //     usuarioDB.save;
-    // });
+    // }); -/
 
-    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+
+    // Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+
+    Usuario.findOneAndReplace(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
 
         if (err) {
             return res.status(400).json({
@@ -142,7 +151,7 @@ app.put('/usuario/:id', (req, res) => {
 
 });
 
-app.delete('/usuario/:id', (req, res) => {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], (req, res) => {
 
     let id = req.params.id;
 
