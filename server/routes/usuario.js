@@ -63,6 +63,7 @@ app.get('/usuario', verificaToken, (req, res) => { // verificaToken es un middle
         })
 });
 
+
 app.post('/usuario', [verificaToken, verificaAdmin_Role], (req, res) => {
     // app.post('/usuario', verificaToken, (req, res) => {
 

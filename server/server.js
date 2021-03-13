@@ -4,6 +4,7 @@ const express = require('express');
 
 const mongoose = require('mongoose');
 
+const path = require('path'); // paquete que viene con node
 
 
 const app = express();
@@ -15,6 +16,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json());
 
+// para ver la carpeta public, tiene un boton index con SignIn
+
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 // configutacion global de rutas /usuario /login en get..put..etc
 app.use(require('./routes/index'));
